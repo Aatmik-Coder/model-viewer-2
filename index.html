@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Viewer</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        model-viewer {
+            width: 90%;
+            height: 512px;
+            margin: 0 auto;
+            padding: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <model-viewer id="speaker" src="assets/microwave glb.glb" ar ar-modes="webxr scene-viewer quick-look"
+        poster="assets/Render.png" shadow-intensity="1" camera-controls touch-action="pan-y" >
+    </model-viewer>
+    <div class="op">
+        <select class="controls" id="color-controls" multiple>
+            <option value="./assets/microwave_texture_map.png" class="ot"
+                style="background-image:url(./assets/microwave_texture_map.png);">1</option>
+        </select>
+    </div>
+
+</body>
+<script type="module">
+    const speakers = document.querySelectorAll("#speaker");
+    const speaker = document.querySelector("#speaker");
+    const colorSelector = document.querySelector('#color-controls');
+    const createAndApplyTexture = async (channel, event) => {
+        const texture = await speaker.createTexture(colorSelector.value);
+
+        speakers.forEach(function (speaker) {
+            const material = speaker.model.materials[0];
+            console.log(material);
+            material.pbrMetallicRoughness[channel].setTexture(texture);
+
+            var finishName = colorSelector.options[colorSelector.selectedIndex].text;
+            if (finishName === "1") {
+                material.pbrMetallicRoughness.setRoughnessFactor(.6);
+                material.pbrMetallicRoughness.setMetallicFactor(1);
+            }
+        });
+    }
+    document.querySelector('#color-controls').addEventListener('input', (event) => {
+        createAndApplyTexture('baseColorTexture', event);
+    });
+
+    speakers.forEach(function (speaker) {
+        speaker.addEventListener('load', (event) => {
+            createAndApplyTexture('baseColorTexture', event);
+        });
+    });
+</script>
+
+</html>
