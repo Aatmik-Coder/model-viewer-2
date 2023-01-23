@@ -18,8 +18,8 @@
 </head>
 
 <body>
-    <model-viewer id="speaker" src="assets/microwave glb.glb" ar ar-button ar-modes="scene-viewer webxr quick-look"
-        poster="assets/Render.png" shadow-intensity="1" camera-controls touch-action="pan-y" field-of-view="5deg">
+    <model-viewer id="speaker" src="assets/microwave glb.glb" ar ar-button ar-modes="webxr scene-viewer quick-look"
+        poster="assets/Render.png" shadow-intensity="1" camera-controls touch-action="pan-y" position="0 -5 0" field-of-view="5deg">
     </model-viewer>
     <!-- <div class="op">
         <select class="controls" id="color-controls" multiple>
@@ -32,6 +32,7 @@
 <script type="module">
     const speaker = document.querySelector("#speaker");
     speaker.addEventListener('load', async () => {
+        console.log(await speaker.toBlob());
         const material = speaker.model.materials[0];
         const texture = await speaker.createTexture("assets/microwave_texture_map.png");
         material.pbrMetallicRoughness['baseColorTexture'].setTexture(texture);
